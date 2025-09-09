@@ -1,24 +1,27 @@
+import SimulationCard from "../components/SimulationCard";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import mockData from "../data/mockData";
+
 export default function Overview() {
   return (
     <div>
-      <h1>Overview</h1>
-
-      <div className="page-card">
-        <h3>Project: Hygrid — Rohith SIH</h3>
-        <p>
-          Frontend-only simulation of an AI-managed Hydrogen–EV hybrid fleet. 
-          Focus for Day 1: setup, mock data and skeleton pages.
-        </p>
+      <h2>System Overview</h2>
+      <div style={{ display: "flex", gap: "20px" }}>
+        <SimulationCard title="Active Fleet" value={45} unit="vehicles" />
+        <SimulationCard title="Hydrogen Consumed" value={320} unit="kg/day" />
+        <SimulationCard title="Avg Range" value={280} unit="km" />
       </div>
 
-      <div className="page-card">
-        <h4>Day 1 Deliverables</h4>
-        <ul>
-          <li>React app skeleton & navigation</li>
-          <li>Mock data for vehicles & stations</li>
-          <li>Architecture diagram draft</li>
-        </ul>
-      </div>
+      <h3>Hydrogen Usage Trend</h3>
+      <LineChart width={600} height={300} data={mockData.hydrogenUsage}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="day" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="fleetA" stroke="#8884d8" />
+        <Line type="monotone" dataKey="fleetB" stroke="#82ca9d" />
+      </LineChart>
     </div>
   );
 }

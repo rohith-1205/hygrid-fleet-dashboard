@@ -1,42 +1,175 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Layout */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9fbfc;
+  color: #1c1c1c;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #1d3557, #457b9d);
+  color: white;
+  padding: 25px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #f1faee;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 18px 0;
+}
+
+.sidebar a {
+  color: #f1faee;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.2s ease;
+  padding: 6px 10px;
+  display: block;
+  border-radius: 6px;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  color: #a8dadc;
+}
+
+/* Main Content */
+.content {
+  flex-grow: 1;
+  padding: 30px;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Simulation Cards */
+.sim-card {
+  background: linear-gradient(135deg, #06beb6, #48b1bf);
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 200px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.sim-card h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sim-card p {
+  font-size: 22px;
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
 }
 
-.card {
-  padding: 2em;
+table th, table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
-.read-the-docs {
-  color: #888;
+table th {
+  background: #457b9d;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs & Buttons */
+input[type="range"] {
+  width: 100%;
+  margin: 8px 0 18px;
+}
+
+input[type="number"] {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  width: 100%;
+  font-size: 14px;
+}
+
+button {
+  background: #06d6a0;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+  background: #04b184;
+  transform: translateY(-2px);
+}
+
+/* Alerts */
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin: 12px 0;
+  font-weight: 500;
+}
+
+.alert.warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.alert.danger {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Progress Bar */
+.progress-container {
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #06d6a0, #1d3557);
+  transition: width 0.4s ease;
 }

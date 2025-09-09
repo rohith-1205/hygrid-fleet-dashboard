@@ -1,16 +1,11 @@
 export default function Policy() {
   return (
     <div>
-      <h1>Policy & Insights</h1>
-
-      <div className="page-card">
-        <h3>Key metrics</h3>
-        <ul>
-          <li>CO₂ baseline: diesel vs hydrogen (to be computed)</li>
-          <li>Cost per km comparison (to be computed)</li>
-          <li>Coverage heatmap (later)</li>
-        </ul>
-      </div>
+      <h2>Policy Insights</h2>
+      <p>
+        This module provides simulated AI-driven recommendations for policy makers
+        on hydrogen fleet adoption, infrastructure scaling, and emission reduction.
+      </p>
     </div>
   );
 }
