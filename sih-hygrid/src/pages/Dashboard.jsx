@@ -38,7 +38,6 @@ export default function Dashboard() {
       lowAlertShownRef.current = false; // allow future alerts
     } else if (totalRange > 0 && totalRange <= 20 && !lowAlertShownRef.current) {
       lowAlertShownRef.current = true;
-      // show single alert
       alert(
         `⚠️ Low Range Alert: only ${totalRange.toFixed(
           1
@@ -53,6 +52,12 @@ export default function Dashboard() {
     const requested = parseFloat(tripInput);
     if (isNaN(requested) || requested <= 0) return;
 
+    // 🚦 Prevent driving when speed = 0
+    if (speed <= 0) {
+      alert("⚠️ Vehicle is not moving. Increase speed above 0 km/h to drive.");
+      return;
+    }
+
     if (totalRange <= 0) {
       alert("🚫 Cannot travel — no power left. Refill or recharge first.");
       return;
@@ -61,21 +66,16 @@ export default function Dashboard() {
     let remainingTrip = requested;
     let drove = 0;
 
-    // Helper closures to update states after calculation (use functional updates)
-    // We'll compute newBattery/newHydrogen then set states once
-
     let newBattery = battery;
     let newHydrogen = hydrogen;
 
     if (powerSource === "Battery") {
-      // First consume battery
       const batteryPossible = newBattery;
       const useFromBattery = Math.min(remainingTrip, batteryPossible);
       newBattery = Math.max(0, newBattery - useFromBattery);
       remainingTrip -= useFromBattery;
       drove += useFromBattery;
 
-      // If needed, fallback to hydrogen
       if (remainingTrip > 0 && newHydrogen > 0) {
         const hydrogenPossibleKm = newHydrogen * kmPerKg;
         const useFromHydrogenKm = Math.min(remainingTrip, hydrogenPossibleKm);
@@ -85,14 +85,10 @@ export default function Dashboard() {
         drove += useFromHydrogenKm;
 
         if (useFromHydrogenKm < requested - useFromBattery) {
-          // hydrogen exhausted
           alert("⚠ Hydrogen depleted while driving. Please refill.");
         }
-      } else if (remainingTrip > 0 && newHydrogen <= 0) {
-        alert("⚠ Battery + Hydrogen insufficient to complete requested trip.");
       }
     } else {
-      // powerSource === "Hydrogen"
       const hydrogenPossibleKm = newHydrogen * kmPerKg;
       const useFromHydrogenKm = Math.min(remainingTrip, hydrogenPossibleKm);
       const useFromHydrogenKg = useFromHydrogenKm / kmPerKg;
@@ -100,7 +96,6 @@ export default function Dashboard() {
       remainingTrip -= useFromHydrogenKm;
       drove += useFromHydrogenKm;
 
-      // fallback to battery if needed
       if (remainingTrip > 0 && newBattery > 0) {
         const useFromBattery = Math.min(remainingTrip, newBattery);
         newBattery = Math.max(0, newBattery - useFromBattery);
@@ -110,17 +105,13 @@ export default function Dashboard() {
         if (useFromBattery < requested - useFromHydrogenKm) {
           alert("⚠ Battery depleted while driving. Please recharge.");
         }
-      } else if (remainingTrip > 0 && newBattery <= 0) {
-        alert("⚠ Hydrogen + Battery insufficient to complete requested trip.");
       }
     }
 
-    // Commit state updates
     setBattery((_) => newBattery);
     setHydrogen((_) => newHydrogen);
     setTotalKms((prev) => prev + drove);
 
-    // clear input once processed
     setTripInput("");
   };
 
@@ -153,33 +144,100 @@ export default function Dashboard() {
     <div>
       <h2>Hybrid Hydrogen-EV Dashboard</h2>
 
+      {/* Digital Speedometer & Odometer */}
+      <div
+        style={{
+          display: "flex",
+          gap: "30px",
+          marginBottom: "20px",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            background: "radial-gradient(circle, #1e3a8a, #111)",
+            color: "white",
+            borderRadius: "50%",
+            width: "140px",
+            height: "140px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "0 0 20px rgba(59,130,246,0.8)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "26px",
+              fontWeight: "bold",
+              color: "#60a5fa",
+            }}
+          >
+            {speed} km/h
+          </p>
+          <small>Speed</small>
+        </div>
+
+        <div
+          style={{
+            background: "#111827",
+            color: "#fff",
+            padding: "20px 30px",
+            borderRadius: "12px",
+            textAlign: "center",
+            boxShadow: "0 0 15px rgba(34,197,94,0.6)",
+          }}
+        >
+          <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+            {totalKms.toFixed(0)} km
+          </p>
+          <small>Total Distance</small>
+        </div>
+      </div>
+
       <div style={{ display: "flex", gap: 20 }}>
         {/* status */}
         <div className="card" style={{ width: "45%" }}>
           <h3>Vehicle Status</h3>
-          <p><b>Speed:</b> {speed} km/h</p>
-          <p><b>Power Source:</b> {powerSource}</p>
+          <p>
+            <b>Speed:</b> {speed} km/h
+          </p>
+          <p>
+            <b>Power Source:</b> {powerSource}
+          </p>
 
-          <p><b>Battery Range:</b> {battery.toFixed(1)} km</p>
+          <p>
+            <b>Battery Range:</b> {battery.toFixed(1)} km
+          </p>
           <div className="progress-container">
-            <div className="progress-bar" style={{ width: `${(battery / batteryFullRange) * 100}%` }} />
+            <div
+              className="progress-bar"
+              style={{ width: `${(battery / batteryFullRange) * 100}%` }}
+            />
           </div>
 
-          <p style={{ marginTop: 12 }}><b>Hydrogen Range:</b> {hydrogenRange.toFixed(1)} km ({hydrogen.toFixed(2)} kg)</p>
+          <p style={{ marginTop: 12 }}>
+            <b>Hydrogen Range:</b> {hydrogenRange.toFixed(1)} km (
+            {hydrogen.toFixed(2)} kg)
+          </p>
           <div className="progress-container">
-            <div className="progress-bar" style={{ width: `${(hydrogen / maxHydrogen) * 100}%` }} />
+            <div
+              className="progress-bar"
+              style={{ width: `${(hydrogen / maxHydrogen) * 100}%` }}
+            />
           </div>
 
-          <p style={{ marginTop: 12 }}><b>Total Effective Range:</b> {totalRange.toFixed(1)} km</p>
-          <p><b>Total Distance Travelled:</b> {totalKms.toFixed(1)} km</p>
-          <p><b>Nearest Station:</b> {nearestStation.name} ({nearestStation.distance} km)</p>
-
-          {totalRange > 0 && totalRange <= 20 && (
-            <div className="alert warning">⚠ Low range: {totalRange.toFixed(1)} km — nearest {nearestStation.name}</div>
-          )}
-          {totalRange <= 0 && (
-            <div className="alert danger">🚫 No power left. Refill or recharge to continue.</div>
-          )}
+          <p style={{ marginTop: 12 }}>
+            <b>Total Effective Range:</b> {totalRange.toFixed(1)} km
+          </p>
+          <p>
+            <b>Total Distance Travelled:</b> {totalKms.toFixed(1)} km
+          </p>
+          <p>
+            <b>Nearest Station:</b> {nearestStation.name} (
+            {nearestStation.distance} km)
+          </p>
         </div>
 
         {/* controls */}
@@ -200,14 +258,16 @@ export default function Dashboard() {
             <input
               type="number"
               min="0"
-              step="0.1"
+              step="1"
               value={tripInput}
               onChange={(e) => setTripInput(e.target.value)}
-              disabled={totalRange <= 0}
+              disabled={totalRange <= 0 || speed <= 0}
               style={{ width: "100%", padding: 8, marginTop: 6 }}
             />
             <div style={{ marginTop: 10 }}>
-              <button type="submit" disabled={totalRange <= 0}>Drive</button>
+              <button type="submit" disabled={totalRange <= 0 || speed <= 0}>
+                Drive
+              </button>
             </div>
           </form>
         </div>
@@ -215,12 +275,19 @@ export default function Dashboard() {
 
       <div className="card" style={{ marginTop: 20 }}>
         <h3>Refuel & Recharge</h3>
-        <p>Hydrogen to full: {(maxHydrogen - hydrogen).toFixed(2)} kg • Cost: ₹{((maxHydrogen - hydrogen) * 450).toFixed(2)}</p>
+        <p>
+          Hydrogen to full: {(maxHydrogen - hydrogen).toFixed(2)} kg • Cost: ₹
+          {((maxHydrogen - hydrogen) * 450).toFixed(2)}
+        </p>
         <button onClick={handleRefill}>Refill Hydrogen</button>
-        <button style={{ marginLeft: 10, background: "#118ab2" }} onClick={handleRecharge}>Recharge Battery</button>
+        <button
+          style={{ marginLeft: 10, background: "#118ab2" }}
+          onClick={handleRecharge}
+        >
+          Recharge Battery
+        </button>
       </div>
 
-      {/* Energy flow visualization */}
       <EnergyFlow powerSource={powerSource} />
     </div>
   );
