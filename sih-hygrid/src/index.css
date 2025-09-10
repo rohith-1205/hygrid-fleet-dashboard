@@ -1,4 +1,4 @@
-import "leaflet/dist/leaflet.css";
+@import "leaflet/dist/leaflet.css";
 :root{
   --sidebar-w: 220px;
   --accent: #0b6ef6;

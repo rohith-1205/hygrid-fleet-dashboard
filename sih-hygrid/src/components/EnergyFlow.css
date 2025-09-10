@@ -1,0 +1,70 @@
+.energy-flow {
+  margin-top: 30px;
+  padding: 20px;
+  background: #111827;
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin: 20px 0;
+}
+
+.wheel,
+.motor,
+.storage {
+  font-size: 2rem;
+  background: #1f2937;
+  padding: 20px;
+  border-radius: 12px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+}
+
+.arrow {
+  width: 60px;
+  height: 10px;
+  border-radius: 5px;
+  background: grey;
+  position: relative;
+  overflow: hidden;
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60px;
+  width: 60px;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, cyan, transparent);
+  animation: flow 1.5s linear infinite;
+}
+
+@keyframes flow {
+  from {
+    left: -60px;
+  }
+  to {
+    left: 60px;
+  }
+}
+
+.active-battery {
+  background: #4ade80;
+  box-shadow: 0px 0px 15px #4ade80;
+}
+
+.active-hydrogen {
+  background: #22d3ee;
+  box-shadow: 0px 0px 15px #22d3ee;
+}
