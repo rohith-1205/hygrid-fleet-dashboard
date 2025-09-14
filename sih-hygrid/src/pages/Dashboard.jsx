@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import mockData from "../data/mockData";
 import EnergyFlow from "../components/EnergyFlow";
-
+                                        
 export default function Dashboard() {
   const maxHydrogen = 5; // kg
   const kmPerKg = 125; // 125 km per 1 kg H2
